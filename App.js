@@ -1,20 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+import {StyleSheet} from 'react-native';
+import * as eva from '@eva-design/eva';
+import {ApplicationProvider} from '@ui-kitten/components';
+import useWeather from './hooks/useWeather';
+import Loader from './components/Loader';
+import Header from './components/Header';
+import Today from './components/Today';
+import Week from './components/Week';
 export default function App() {
+  const {loading, weather, week} = useWeather();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <ApplicationProvider style={styles.container} {...eva} theme={eva.light}>
       <StatusBar style="auto" />
-    </View>
+      {loading ? (
+        <Loader/>
+      ):(
+        <>
+        <Header weather={weather}/>
+        {!loading && weather && weather.weather &&(
+        <Today weather={weather}/>
+        )}
+        <Week week={week} loading={loading} />
+        </>
+      )}
+    </ApplicationProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection:'column',
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    height:'100%',
+    width:'100%',
+    color:'white',
   },
 });
